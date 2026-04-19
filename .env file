@@ -1,0 +1,4 @@
+OPENAI_API_KEY="ck-6ZBk1ka21178Uhv8zfp7xVFFAznGJ774pTntqkGX45sH"
+CHROMA_API_KEY="your-chroma-cloud-api-key"
+CHROMA_TENANT="0025343f-ede6-42bf-aecb-9ffaca52699f"
+CHROMA_DATABASE="test-1"

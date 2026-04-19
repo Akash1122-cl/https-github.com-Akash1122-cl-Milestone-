@@ -1,0 +1,68 @@
+name: Daily Mutual Fund Fact Ingestion
+
+on:
+  schedule:
+    - cron: '45 3 * * *' # 9:15 AM IST daily
+  workflow_dispatch: # Allows manual trigger
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install playwright requests
+          playwright install chromium
+
+      - name: Run Ingestion Script
+        run: python scripts/ingest.py
+
+      - name: Upload Data Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: mutual-fund-data
+          path: |
+            data/raw/
+            data/processed/manifest.json
+          retention-days: 7
+
+  embed:
+    name: Chunking & Embedding
+    needs: ingest                  # Only runs after ingestion succeeds
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download ingested data artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: mutual-fund-data
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install embedding dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install chromadb sentence-transformers requests python-dotenv
+
+      - name: Run Chunking & Embedding (Cloud Sync)
+        env:
+          CHROMA_API_KEY: ${{ secrets.CHROMA_API_KEY }}
+          CHROMA_TENANT: ${{ secrets.CHROMA_TENANT }}
+          CHROMA_DATABASE: ${{ secrets.CHROMA_DATABASE }}
+        run: python scripts/index.py

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Session Chat Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .session-frame {
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            height: 600px;
+            position: relative;
+        }
+        .session-header {
+            background: #2563eb;
+            color: white;
+            padding: 10px;
+            font-weight: bold;
+            border-radius: 6px 6px 0 0;
+        }
+        .session-content {
+            padding: 10px;
+            height: calc(100% - 40px);
+            overflow-y: auto;
+        }
+        .message {
+            margin: 5px 0;
+            padding: 8px;
+            border-radius: 5px;
+        }
+        .user-message {
+            background: #e3f2fd;
+            margin-left: 20px;
+        }
+        .bot-message {
+            background: #f3e5f5;
+            margin-right: 20px;
+        }
+        .test-controls {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+        .test-button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .test-button:hover {
+            background: #1d4ed8;
+        }
+        .status {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+    </style>
+</head>
+<body>
+    <h1>?? Multi-Session Chat Test</h1>
+    <p>This test verifies that multiple chat sessions can run simultaneously without memory sharing.</p>
+    
+    <div class="test-container">
+        <div class="session-frame">
+            <div class="session-header">Session 1</div>
+            <div class="session-content" id="session1">
+                <div class="message bot-message">Bot: Welcome to Session 1! Ask me about mutual funds.</div>
+            </div>
+        </div>
+        
+        <div class="session-frame">
+            <div class="session-header">Session 2</div>
+            <div class="session-content" id="session2">
+                <div class="message bot-message">Bot: Welcome to Session 2! Ask me about mutual funds.</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="test-controls">
+        <h3>Test Controls</h3>
+        
+        <div>
+            <button class="test-button" onclick="testSession1()">Send to Session 1</button>
+            <button class="test-button" onclick="testSession2()">Send to Session 2</button>
+            <button class="test-button" onclick="testBothSessions()">Send to Both Sessions</button>
+            <button class="test-button" onclick="testAdvisoryQueries()">Test Advisory Queries</button>
+            <button class="test-button" onclick="clearSessions()">Clear Sessions</button>
+        </div>
+        
+        <div id="status" class="status info">Ready to test multi-session functionality...</div>
+    </div>
+
+    <script>
+        let session1Messages = 1;
+        let session2Messages = 1;
+        
+        function addMessage(sessionId, message, isUser = false) {
+            const sessionDiv = document.getElementById(sessionId);
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+            messageDiv.textContent = `${isUser ? 'You' : 'Bot'}: ${message}`;
+            sessionDiv.appendChild(messageDiv);
+            sessionDiv.scrollTop = sessionDiv.scrollHeight;
+            
+            if (sessionId === 'session1') session1Messages++;
+            if (sessionId === 'session2') session2Messages++;
+        }
+        
+        function updateStatus(message, type = 'info') {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = message;
+            statusDiv.className = `status ${type}`;
+        }
+        
+        async function sendMessageToAPI(sessionId, query) {
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/chat/query', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        thread_id: sessionId,
+                        query: query,
+                        scheme_name: null
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`API Error: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                updateStatus(`API Error: ${error.message}`, 'error');
+                return null;
+            }
+        }
+        
+        async function testSession1() {
+            updateStatus('Testing Session 1...', 'info');
+            addMessage('session1', 'What is the expense ratio for HDFC Mid Cap Fund?', true);
+            
+            const response = await sendMessageToAPI('test-session-1', 'What is the expense ratio for HDFC Mid Cap Fund?');
+            if (response) {
+                addMessage('session1', response.answer);
+                updateStatus('Session 1 test completed successfully!', 'success');
+            }
+        }
+        
+        async function testSession2() {
+            updateStatus('Testing Session 2...', 'info');
+            addMessage('session2', 'What is the exit load for Quant Small Cap Fund?', true);
+            
+            const response = await sendMessageToAPI('test-session-2', 'What is the exit load for Quant Small Cap Fund?');
+            if (response) {
+                addMessage('session2', response.answer);
+                updateStatus('Session 2 test completed successfully!', 'success');
+            }
+        }
+        
+        async function testBothSessions() {
+            updateStatus('Testing both sessions simultaneously...', 'info');
+            
+            // Send different queries to each session
+            const query1 = 'What is the current NAV of Nippon India Large Cap Fund?';
+            const query2 = 'What is the minimum SIP for Nippon India Growth Fund?';
+            
+            addMessage('session1', query1, true);
+            addMessage('session2', query2, true);
+            
+            // Send both requests simultaneously
+            const [response1, response2] = await Promise.all([
+                sendMessageToAPI('test-session-1', query1),
+                sendMessageToAPI('test-session-2', query2)
+            ]);
+            
+            if (response1 && response2) {
+                addMessage('session1', response1.answer);
+                addMessage('session2', response2.answer);
+                updateStatus('Both sessions tested successfully! No memory sharing detected.', 'success');
+            }
+        }
+        
+        async function testAdvisoryQueries() {
+            updateStatus('Testing advisory query isolation...', 'info');
+            
+            const advisoryQuery = 'Should I invest in HDFC or Nippon?';
+            
+            addMessage('session1', advisoryQuery, true);
+            addMessage('session2', advisoryQuery, true);
+            
+            const [response1, response2] = await Promise.all([
+                sendMessageToAPI('test-session-1', advisoryQuery),
+                sendMessageToAPI('test-session-2', advisoryQuery)
+            ]);
+            
+            if (response1 && response2) {
+                addMessage('session1', response1.answer);
+                addMessage('session2', response2.answer);
+                
+                // Verify both sessions received the same refusal
+                const isIsolated = response1.answer === response2.answer && 
+                                 response1.is_advisory === true && 
+                                 response2.is_advisory === true;
+                
+                if (isIsolated) {
+                    updateStatus('Advisory queries properly isolated in both sessions!', 'success');
+                } else {
+                    updateStatus('Session isolation issue detected!', 'error');
+                }
+            }
+        }
+        
+        function clearSessions() {
+            document.getElementById('session1').innerHTML = '<div class="message bot-message">Bot: Welcome to Session 1! Ask me about mutual funds.</div>';
+            document.getElementById('session2').innerHTML = '<div class="message bot-message">Bot: Welcome to Session 2! Ask me about mutual funds.</div>';
+            session1Messages = 1;
+            session2Messages = 1;
+            updateStatus('Sessions cleared. Ready for new tests.', 'info');
+        }
+        
+        // Auto-test on page load
+        window.onload = function() {
+            updateStatus('Multi-session test page loaded. API should be running on http://127.0.0.1:8000', 'info');
+        };
+    </script>
+</body>
+</html>

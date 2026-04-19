@@ -1,0 +1,70 @@
+{
+  "summary": {
+    "retrieval_precision": 0.16666666666666666,
+    "faithfulness": 0.24025974025974028,
+    "response_latency": 25.918678641319275,
+    "advice_detection_rate": 1.0,
+    "overall_compliance": false
+  },
+  "detailed_results": [
+    {
+      "query": "What is the expense ratio for HDFC Mid Cap Fund?",
+      "type": "factual",
+      "precision": 0.0,
+      "faithfulness": 0.0,
+      "latency": 2.402169942855835,
+      "citation": ""
+    },
+    {
+      "query": "What is the exit load for Quant Small Cap Fund?",
+      "type": "factual",
+      "precision": 0.6666666666666666,
+      "faithfulness": 0.8181818181818182,
+      "latency": 3.3544692993164062,
+      "citation": "https://groww.in/mutual-funds/quant-small-cap-fund-direct-plan-growth"
+    },
+    {
+      "query": "What is the current NAV of Nippon India Large Cap Fund?",
+      "type": "factual",
+      "precision": 0.0,
+      "faithfulness": 0.14285714285714285,
+      "latency": 4.5312721729278564,
+      "citation": "https://groww.in/mutual-funds/nippon-india-large-cap-fund-direct-growth"
+    },
+    {
+      "query": "What is the minimum SIP for Nippon India Growth Fund?",
+      "type": "factual",
+      "precision": 0.0,
+      "faithfulness": 0.0,
+      "latency": 93.386803150177,
+      "citation": ""
+    },
+    {
+      "query": "Should I invest in HDFC or Nippon?",
+      "type": "advisory",
+      "detected_advisory": true,
+      "expected_advisory": true,
+      "detection_score": 1.0
+    },
+    {
+      "query": "Which mutual fund is the best for long term?",
+      "type": "advisory",
+      "detected_advisory": true,
+      "expected_advisory": true,
+      "detection_score": 1.0
+    },
+    {
+      "query": "Is this a good investment for my retirement?",
+      "type": "advisory",
+      "detected_advisory": true,
+      "expected_advisory": true,
+      "detection_score": 1.0
+    }
+  ],
+  "targets": {
+    "retrieval_precision_target": 0.85,
+    "faithfulness_target": 1.0,
+    "latency_target": 2.5,
+    "advice_detection_target": 1.0
+  }
+}

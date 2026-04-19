@@ -1,0 +1,62 @@
+{
+  "Nippon India Large Cap Fund": {
+    "fund_name": "Nippon India Large Cap Fund",
+    "url": "https://groww.in/mutual-funds/nippon-india-large-cap-fund-direct-growth",
+    "extracted_at": "2026-04-19T12:37:11.621049",
+    "expense_ratio": "0.71%",
+    "exit_load": "</h5><p class=\"bodybase contentsecondary\">a fee payable to a mutual fund house for exiting a fund (fully or partially) before the completion of a specified period from the date of investment",
+    "minimum_sip": null,
+    "lock_in_period": "3 years (ELSS tax benefit)",
+    "riskometer": "Low",
+    "benchmark": "NIFTY 50",
+    "statement_download": null
+  },
+  "Nippon India Taiwan Equity Fund": {
+    "fund_name": "Nippon India Taiwan Equity Fund",
+    "url": "https://groww.in/mutual-funds/nippon-india-taiwan-equity-fund-direct-growth",
+    "extracted_at": "2026-04-19T12:37:09.758490",
+    "expense_ratio": "0.98%",
+    "exit_load": "</h5><p class=\"bodybase contentsecondary\">a fee payable to a mutual fund house for exiting a fund (fully or partially) before the completion of a specified period from the date of investment",
+    "minimum_sip": null,
+    "lock_in_period": "3 years (ELSS tax benefit)",
+    "riskometer": "Low",
+    "benchmark": "NIFTY 50",
+    "statement_download": null
+  },
+  "HDFC Mid-Cap Opportunities Fund": {
+    "fund_name": "HDFC Mid-Cap Opportunities Fund",
+    "url": "https://groww.in/mutual-funds/hdfc-mid-cap-fund-direct-growth",
+    "extracted_at": "2026-04-19T12:37:08.979050",
+    "expense_ratio": "0.77%",
+    "exit_load": "</h5><p class=\"bodybase contentsecondary\">a fee payable to a mutual fund house for exiting a fund (fully or partially) before the completion of a specified period from the date of investment",
+    "minimum_sip": null,
+    "lock_in_period": "3 years (ELSS tax benefit)",
+    "riskometer": "Low",
+    "benchmark": "NIFTY 50",
+    "statement_download": null
+  },
+  "Quant Small Cap Fund": {
+    "fund_name": "Quant Small Cap Fund",
+    "url": "https://groww.in/mutual-funds/quant-small-cap-fund-direct-plan-growth",
+    "extracted_at": "2026-04-19T12:37:11.678288",
+    "expense_ratio": "0.83%",
+    "exit_load": "</h5><p class=\"bodybase contentsecondary\">a fee payable to a mutual fund house for exiting a fund (fully or partially) before the completion of a specified period from the date of investment",
+    "minimum_sip": null,
+    "lock_in_period": "3 years (ELSS tax benefit)",
+    "riskometer": "Low",
+    "benchmark": "NIFTY 50",
+    "statement_download": null
+  },
+  "Nippon India Growth Fund": {
+    "fund_name": "Nippon India Growth Fund",
+    "url": "https://groww.in/mutual-funds/nippon-india-growth-mid-cap-fund-direct-growth",
+    "extracted_at": "2026-04-19T12:37:12.145231",
+    "expense_ratio": "0.78%",
+    "exit_load": "</h5><p class=\"bodybase contentsecondary\">a fee payable to a mutual fund house for exiting a fund (fully or partially) before the completion of a specified period from the date of investment",
+    "minimum_sip": null,
+    "lock_in_period": "3 years (ELSS tax benefit)",
+    "riskometer": "Low",
+    "benchmark": "NIFTY 50",
+    "statement_download": null
+  }
+}

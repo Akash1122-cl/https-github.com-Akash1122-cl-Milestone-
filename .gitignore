@@ -1,0 +1,25 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Project-specific data folders
+# We keep the structure but ignore the actual raw downloads
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+
+# Environment files
+.env
+.venv
+env/
+venv/
+ENV/
+
+# Playwright binaries (locally installed)
+pw-browser/

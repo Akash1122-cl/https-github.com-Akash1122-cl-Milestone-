@@ -1,0 +1,165 @@
+/* Session Manager Styles */
+
+.session-manager {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 1rem;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.session-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.session-header h3 {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.new-session-btn {
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.new-session-btn:hover {
+  background: var(--primary-hover);
+}
+
+.session-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.session-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+}
+
+.session-item:hover {
+  background: var(--background);
+  border-color: var(--border);
+}
+
+.session-item.active {
+  background: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
+.session-item.active .session-meta,
+.session-item.active .session-time {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.session-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.session-name {
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 0.125rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.session-meta {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.session-time {
+  font-size: 0.625rem;
+  opacity: 0.7;
+}
+
+.delete-session-btn {
+  background: var(--danger-color);
+  color: white;
+  border: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 50%;
+  font-size: 0.75rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  opacity: 0.7;
+}
+
+.delete-session-btn:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.session-footer {
+  margin-top: 0.75rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+
+.session-footer small {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .session-manager {
+    padding: 0.75rem 1rem;
+  }
+  
+  .session-header h3 {
+    font-size: 0.8rem;
+  }
+  
+  .new-session-btn {
+    font-size: 0.625rem;
+    padding: 0.2rem 0.5rem;
+  }
+  
+  .session-name {
+    font-size: 0.8rem;
+  }
+  
+  .session-meta {
+    font-size: 0.625rem;
+  }
+  
+  .delete-session-btn {
+    width: 1rem;
+    height: 1rem;
+    font-size: 0.625rem;
+  }
+}
