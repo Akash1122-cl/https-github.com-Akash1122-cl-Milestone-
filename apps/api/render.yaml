@@ -6,8 +6,8 @@ services:
     plan: free
     repo: https://github.com/Akash1122-cl/Milestone-
     rootDir: apps/api
-    dockerContext: apps/api
-    dockerfilePath: apps/api/Dockerfile
+    dockerContext: .
+    dockerfilePath: ./Dockerfile
     healthCheckPath: /health
     envVars:
       - key: CHROMA_API_KEY
