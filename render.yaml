@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: mutual-fund-api
+    runtime: docker
+    plan: free
+    repo: https://github.com/Akash1122-cl/Milestone-
+    rootDir: .
+    dockerContext: .
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: CHROMA_API_KEY
+        sync: false
+      - key: CHROMA_TENANT
+        sync: false
+      - key: CHROMA_DATABASE
+        sync: false
+      - key: GOOGLE_API_KEY
+        sync: false
+      - key: PYTHON_VERSION
+        value: "3.10"
+        sync: false
