@@ -57,7 +57,7 @@ def generate_answer(query: str, context: str) -> str:
         full_query = f"{SYSTEM_PROMPT.format(context=context)}\n\nQuery: {query}"
         
         response = client.models.generate_content(
-            model='gemini-2.5-flash-lite',
+            model='gemini-1.5-flash',
             contents=full_query,
             config=types.GenerateContentConfig(
                 temperature=0.0,
