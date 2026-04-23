@@ -46,10 +46,14 @@ class EnhancedRetriever:
     """Enhanced retriever that combines Chroma Cloud with structured metrics"""
     
     def __init__(self):
-        self.collections = {
-            'nippon_india': chroma_client.get_collection('nippon_india'),
-            'general': chroma_client.get_collection('general')
-        }
+        try:
+            self.collections = {
+                'nippon_india': chroma_client.get_or_create_collection('nippon_india'),
+                'general': chroma_client.get_or_create_collection('general')
+            }
+        except Exception as e:
+            print(f"Warning: Could not initialize collections. Error: {e}")
+            self.collections = {}
     
     def retrieve_enhanced_context(self, query: str, scheme_name: Optional[str] = None, top_k: int = 3) -> Tuple[str, Optional[str], Optional[str]]:
         """

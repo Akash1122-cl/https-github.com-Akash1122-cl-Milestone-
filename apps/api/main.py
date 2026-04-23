@@ -1,12 +1,20 @@
-from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-from typing import Optional
-import os
+import sys
+import traceback
 
-from core.enhanced_retriever import retrieve_context
-from core.generator import generate_answer, is_advisory_query, REFUSAL_PROMPT
-from routers.metrics import router as metrics_router
+try:
+    from fastapi import FastAPI, HTTPException
+    from fastapi.middleware.cors import CORSMiddleware
+    from pydantic import BaseModel
+    from typing import Optional
+    import os
+
+    from core.enhanced_retriever import retrieve_context
+    from core.generator import generate_answer, is_advisory_query, REFUSAL_PROMPT
+    from routers.metrics import router as metrics_router
+except Exception as e:
+    print(f"CRITICAL ERROR DURING IMPORT: {e}", file=sys.stderr)
+    traceback.print_exc()
+    raise
 
 app = FastAPI(title="Mutual Fund FAQ API", description="Facts-only RAG backend")
 
