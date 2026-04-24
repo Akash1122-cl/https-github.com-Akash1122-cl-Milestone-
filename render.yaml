@@ -21,3 +21,22 @@ services:
       - key: PYTHON_VERSION
         value: "3.10"
         sync: false
+
+  # Next.js Frontend Service
+  - type: web
+    name: mutual-fund-web
+    runtime: node
+    plan: free
+    repo: https://github.com/Akash1122-cl/Milestone-
+    rootDir: apps/web
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NEXT_PUBLIC_API_URL
+        fromService:
+          type: web
+          name: mutual-fund-api
+          property: host
+      - key: NODE_VERSION
+        value: "20"
+        sync: false
