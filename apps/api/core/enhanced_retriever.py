@@ -87,21 +87,29 @@ class EnhancedRetriever:
         return combined_context, best_citation, best_updated
     
     def _get_metrics_context(self, query: str, scheme_name: Optional[str] = None) -> str:
-        """Get relevant context from structured metrics data"""
+        """Get relevant context from structured metrics data.
+        
+        When scheme_name is None (always from the frontend), we extract the fund name
+        from the query text itself, then fall back to search_funds.
+        """
         query_lower = query.lower()
         context_parts = []
         
-        # Check if query is asking about specific metrics
         metric_keywords = {
             'expense ratio': 'expense_ratio',
-            'exit load': 'exit_load', 
+            'exit load': 'exit_load',
             'minimum sip': 'minimum_sip',
             'sip': 'minimum_sip',
             'lock in': 'lock_in_period',
             'lock-in': 'lock_in_period',
             'riskometer': 'riskometer',
             'risk': 'riskometer',
-            'benchmark': 'benchmark'
+            'benchmark': 'benchmark',
+            'url': 'url',
+            'link': 'url',
+            'website': 'url',
+            'statement': 'statement_download',
+            'download': 'statement_download'
         }
         
         # Determine which metric is being asked about
@@ -111,41 +119,51 @@ class EnhancedRetriever:
                 requested_metric = metric_field
                 break
         
-        # Get fund data
+        def _safe_value(v):
+            """Reject None, empty, placeholder, or HTML-contaminated values."""
+            if not v or v in (None, '', 'Not found'):
+                return None
+            if '<' in str(v) or '>' in str(v):  # skip scraped HTML garbage
+                return None
+            return v
+        
+        def _format_fund(fund, fund_name, requested_metric):
+            """Append clean metric lines for a fund."""
+            if requested_metric:
+                value = _safe_value(fund.get(requested_metric))
+                if value:
+                    context_parts.append(
+                        f"{fund_name} {requested_metric.replace('_', ' ').title()}: {value}"
+                    )
+            else:
+                context_parts.append(f"Fund: {fund_name}")
+                for metric in ['expense_ratio', 'exit_load', 'minimum_sip',
+                               'lock_in_period', 'riskometer', 'benchmark']:
+                    value = _safe_value(fund.get(metric))
+                    if value:
+                        context_parts.append(
+                            f"{metric.replace('_', ' ').title()}: {value}"
+                        )
+        
         if scheme_name:
             fund_data = fund_metrics_service.get_fund_by_name(scheme_name)
             if fund_data:
-                if requested_metric:
-                    # Return specific metric
-                    value = fund_data.get(requested_metric)
-                    if value and value not in [None, '', 'Not found']:
-                        context_parts.append(f"{scheme_name} {requested_metric.replace('_', ' ').title()}: {value}")
-                else:
-                    # Return all available metrics
-                    context_parts.append(f"Fund: {scheme_name}")
-                    for metric in ['expense_ratio', 'exit_load', 'minimum_sip', 'lock_in_period', 'riskometer', 'benchmark']:
-                        value = fund_data.get(metric)
-                        if value and value not in [None, '', 'Not found']:
-                            context_parts.append(f"{metric.replace('_', ' ').title()}: {value}")
+                _format_fund(fund_data, scheme_name, requested_metric)
         else:
-            # Search for relevant funds
+            # Try to identify fund name directly from the query text
             matching_funds = fund_metrics_service.search_funds(query)
-            for fund in matching_funds[:3]:  # Limit to top 3
+            
+            # If no match by name, return ALL funds for the requested metric
+            # so the LLM can pick the right one
+            if not matching_funds and requested_metric:
+                matching_funds = fund_metrics_service.get_all_funds()
+            
+            for fund in matching_funds[:3]:
                 fund_name = fund.get('fund_name', 'Unknown Fund')
-                if requested_metric:
-                    value = fund.get(requested_metric)
-                    if value and value not in [None, '', 'Not found']:
-                        context_parts.append(f"{fund_name} {requested_metric.replace('_', ' ').title()}: {value}")
-                else:
-                    # Add basic fund info
-                    expense_ratio = fund.get('expense_ratio')
-                    riskometer = fund.get('riskometer')
-                    if expense_ratio and expense_ratio not in [None, '', 'Not found']:
-                        context_parts.append(f"{fund_name} Expense Ratio: {expense_ratio}")
-                    if riskometer and riskometer not in [None, '', 'Not found']:
-                        context_parts.append(f"{fund_name} Risk Level: {riskometer}")
+                _format_fund(fund, fund_name, requested_metric)
         
         return '\n'.join(context_parts)
+
     
     def _retrieve_chroma_context(self, query: str, scheme_name: Optional[str] = None, top_k: int = 3) -> Tuple[str, Optional[str], Optional[str]]:
         """Retrieve context from Chroma Cloud (original implementation)"""

@@ -117,20 +117,40 @@ class FundMetricsService:
         return filtered_funds
     
     def search_funds(self, query: str) -> List[Dict[str, Any]]:
-        """Search funds by name or attributes"""
+        """Search funds by name or attributes.
+        
+        Normalizes hyphens/spaces so 'hdfc mid cap' matches 'HDFC Mid-Cap Opportunities Fund'.
+        Also matches on individual keywords (words ≥4 chars) for partial queries.
+        """
         all_funds = self.get_all_funds()
-        query_lower = query.lower()
+        # Normalize: lowercase + replace hyphens with spaces
+        query_normalized = query.lower().replace('-', ' ')
+        query_words = [w for w in query_normalized.split() if len(w) >= 4]
         
         matching_funds = []
+        seen = set()
         for fund in all_funds:
-            fund_name = fund.get('fund_name', '').lower()
-            benchmark = fund.get('benchmark', '').lower()
+            fund_name = fund.get('fund_name', '')
+            # Normalize fund name the same way
+            fund_name_normalized = fund_name.lower().replace('-', ' ')
+            benchmark_normalized = fund.get('benchmark', '').lower().replace('-', ' ')
             
-            # Search in fund name and benchmark
-            if (query_lower in fund_name or 
-                query_lower in benchmark or
-                query_lower in fund.get('riskometer', '').lower()):
+            matched = False
+            # Full phrase match (normalized)
+            if query_normalized in fund_name_normalized or query_normalized in benchmark_normalized:
+                matched = True
+            # Keyword match: all significant words must appear in fund name
+            elif query_words and all(word in fund_name_normalized for word in query_words):
+                matched = True
+            # Any keyword match (looser fallback)
+            elif query_words and any(word in fund_name_normalized for word in query_words):
+                matched = True
+            elif query_normalized in fund.get('riskometer', '').lower():
+                matched = True
+            
+            if matched and fund_name not in seen:
                 matching_funds.append(fund)
+                seen.add(fund_name)
         
         return matching_funds
     
